@@ -1,0 +1,95 @@
+# org: andrevinicius201
+# app: todo-list
+service: serverless-home-challenge
+
+provider:
+  name: aws
+  runtime: python3.12
+  region: us-east-1
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:GetItem"
+        - "dynamodb:PutItem"
+        - "dynamodb:DeleteItem"
+        - "dynamodb:UpdateItem"
+        - "dynamodb:Scan"
+      Resource:
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/todos"
+
+functions:
+  createTodo:
+    handler: crud_functions/createTodo.process
+    events:
+      - http:
+          path: todos
+          method: post
+          request:
+            schemas:
+              application/json: ${file(schemas/createTodo.json)}
+          cors: true
+  getAllTodos:
+    handler: crud_functions/getAllTodos.process
+    events:
+      - http:
+          path: todos
+          method: get
+          cors: true
+  getTodo:
+    handler: crud_functions/getTodo.process
+    events:
+      - http:
+          path: todos/{id}
+          method: get
+          cors: true
+  updateTodo:
+    handler: crud_functions/updateTodo.process
+    events:
+      - http:
+          path: todos/{id}
+          method: put
+          request:
+            schemas:
+              application/json: ${file(schemas/updateTodo.json)}
+            parameters:
+              paths:
+                id: true
+          cors: true
+  deleteTodo:
+    handler: crud_functions/deleteTodo.process
+    events:
+      - http:
+          path: todos/{id}
+          method: delete
+          cors: true
+resources:
+  Resources:
+    TodosDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: todos
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        
+custom:
+  apiGateway:
+    requestValidators:
+      all: 
+        name: all
+        validateRequestBody: true
+        validateRequestParameters: true
+    gatewayResponses:
+      BAD_REQUEST_BODY:
+        statusCode: 400
+        responseTemplates:
+          application/json: "{\"error\": \"$context.error.validationErrorString\"}"
+plugins:
+  # - serverless-python-requirements
+  - serverless-offline
