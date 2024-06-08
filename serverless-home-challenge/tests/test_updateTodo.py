@@ -48,9 +48,8 @@ def testUpdateExistingItemValidPayload():
     result = crud_functions.updateTodo.process(update_item_status_event, update_item_status_context)
     
     assert result['statusCode'] == 201
-    assert json.loads(result['body'])["completed"] == True
-    assert result['headers']['Content-Type'] == 'application/json'
-    assert result['headers']['Access-Control-Allow-Origin'] == '*'
+    assert result['body']['title'] == 'Complete AWS home challenge'
+    assert result['body']['completed'] == True
 
 @mock_aws 
 def testUpdateNotExistingItem():
@@ -64,8 +63,7 @@ def testUpdateNotExistingItem():
     update_item_status_context = None
     result = crud_functions.updateTodo.process(update_item_status_event, update_item_status_context)
     assert result['statusCode'] == 404
-    assert json.loads(result['body']) == {"error": "Item not found"}
-
+    assert result['body'] == {"error": "Item not found"}
 
 @mock_aws
 def testUpdateExistingItemInvalidPayload():

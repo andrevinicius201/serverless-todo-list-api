@@ -1,51 +1,25 @@
 import json
 import boto3
-from botocore.exceptions import ClientError
+from util.responses import Responses
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('todos')
+responses = Responses()
 
 def process(event, context):
     try:
-        id = event['pathParameters']['id']
-    except:
-        return {
-                'statusCode': 400,
-                'body': json.dumps({
-                    'error': 'A path must be specified with a todo id'
-                }),
-                'headers': {
-                    'Content-Type': 'application/json'
-                }
-        }
+        id = event['path']['id']
+    except Exception as e:
+        return responses._500({'error': 'Internal Server Error'})
     
     try:
         response = table.get_item(Key={'id': id})
         
         if 'Item' in response:
-            return {
-                'statusCode': 200,
-                'body': json.dumps(response['Item']),
-                'headers': {
-                    'Content-Type': 'application/json'
-                }
-            }
+            return responses._200(response['Item'])
         else:
-            return {
-                'statusCode': 404,
-                'body': json.dumps({
-                    'error': 'TO-DO item was not found'
-                }),
-                'headers': {
-                    'Content-Type': 'application/json'
-                }
-            }
+            return responses._404({'error': 'TO-DO item was not found'})
         
-    except ClientError as e:
-        return {
-            'statusCode': 500,
-            'body': json.dumps({'error': str(e)}),
-            'headers': {
-                'Content-Type': 'application/json'
-            }
-        }
+    except Exception as e:
+        return responses._500({'error': 'Internal Server Error'})
+        

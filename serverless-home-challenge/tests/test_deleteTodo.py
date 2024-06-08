@@ -48,7 +48,7 @@ def testDeleteTodoNotCompletedItem():
 
     result = process(event, context)
     assert result['statusCode'] == 409
-    assert json.loads(result['body'])['error'] == 'The Specified TODO item state must be "completed" in order to delete it'
+    assert result['body'] == {'error': 'The Specified TODO item state must be "completed" in order to delete it'}
 
 @mock_aws
 def testDeleteTodoNotExistentItem():
@@ -66,7 +66,7 @@ def testDeleteTodoNotExistentItem():
 
     result = process(event, context)
     assert result['statusCode'] == 404
-    assert json.loads(result['body'])['error'] == 'No TODO item was found with the given ID'
+    assert result['body'] == {'error': 'No TODO item was found with the given ID'}
 
 @mock_aws
 def testDeleteTodoExistingItem():
@@ -92,4 +92,4 @@ def testDeleteTodoExistingItem():
     context = None
 
     result = process(event, context)
-    assert result['statusCode'] == 201
+    assert result['statusCode'] == 204

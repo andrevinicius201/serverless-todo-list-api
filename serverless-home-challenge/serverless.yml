@@ -24,9 +24,10 @@ functions:
       - http:
           path: todos
           method: post
+          integration: lambda
           request:
             schemas:
-              application/json: ${file(schemas/createTodo.json)}
+              application/json: ${file(./schemas/createTodo.json)}
           cors: true
   getAllTodos:
     handler: crud_functions/getAllTodos.process
@@ -34,6 +35,7 @@ functions:
       - http:
           path: todos
           method: get
+          integration: lambda
           cors: true
   getTodo:
     handler: crud_functions/getTodo.process
@@ -41,6 +43,7 @@ functions:
       - http:
           path: todos/{id}
           method: get
+          integration: lambda
           cors: true
   updateTodo:
     handler: crud_functions/updateTodo.process
@@ -48,9 +51,10 @@ functions:
       - http:
           path: todos/{id}
           method: put
+          integration: lambda
           request:
             schemas:
-              application/json: ${file(schemas/updateTodo.json)}
+              application/json: ${file(./schemas/updateTodo.json)}
             parameters:
               paths:
                 id: true
@@ -61,7 +65,9 @@ functions:
       - http:
           path: todos/{id}
           method: delete
+          integration: lambda
           cors: true
+
 resources:
   Resources:
     TodosDynamoDbTable:
@@ -77,19 +83,28 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        
+    GatewayResponseInvalidRequestBody:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseType: BAD_REQUEST_BODY 
+        RestApiId: !Ref ApiGatewayRestApi
+        ResponseTemplates:
+          application/json: "{\"statusCode\": 400, \"error\": \"$context.error.validationErrorString\"}"
+
+
 custom:
   apiGateway:
     requestValidators:
-      all: 
-        name: all
+      bodyValidator: 
+        name: bodyValidator
         validateRequestBody: true
         validateRequestParameters: true
-    gatewayResponses:
-      BAD_REQUEST_BODY:
-        statusCode: 400
-        responseTemplates:
-          application/json: "{\"error\": \"$context.error.validationErrorString\"}"
+  # documentation:
+  #   version: '1'
+  #   title: 'My API'
+  #   description: 'This is my API'
+  #   models: {}
+
 plugins:
   # - serverless-python-requirements
   - serverless-offline

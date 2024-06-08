@@ -1,8 +1,7 @@
 import json
 import boto3
 from moto import mock_aws
-from crud_functions.createTodo import process
-from botocore.exceptions import ClientError
+from crud_functions.getTodo import process
 
 @mock_aws
 def setup_dynamodb_table():
@@ -30,47 +29,59 @@ def setup_dynamodb_table():
     return table
 
 @mock_aws
-def testAddTodoValidPayload():
+def test_get_data_from_empty_table():
     """
-    Adds a new todo item in the table
-    """
-    table = setup_dynamodb_table()
-
-    event = {}
-    event['body'] = {"title":"Fix the car engine"}    
-
-    context = None
-
-    result = process(event, context)
-    assert result['statusCode'] == 201
-    assert result['body'] == {'title':'Fix the car engine', 'completed':False}
-
-@mock_aws
-def testAddTodoInvalidPayload():
-    """
-    Tries to add a new item in the table with an invalid payload (sending 'task_name' instead 'title'). Input does not match the required schema.
+    Runs a get all operation against an item that not exists
     """
     table = setup_dynamodb_table()
+    table.put_item(Item={'id': 'zzzzzzz', 'task': 'Complete the serverless home challenge'})
 
-    event = {}
-    event['body'] = {"task_name":"Fix the car engine"} 
+    event = {
+        "path": {
+            "id": "abcdefgh"
+        }
+    }
+
     context = None
 
     result = process(event, context)
-    assert result['statusCode'] == 400
-    assert result['body'] == {'error': 'Missing required fields'}
+    
+    assert result['statusCode'] == 404
+    assert result['body'] == {'error': 'TO-DO item was not found'}
+
 
 @mock_aws
-def testAddTodoInternalServerError():
+def test_get_data_from_populated_table():
     """
-    Forces an internal server error by trying to populate an inexisting table.
+    Runs a get all operation against an existing item
     """
+    table = setup_dynamodb_table()
+    table.put_item(Item={'id': 'abcdefgh', 'task': 'Complete the serverless home challenge'})
 
-    event = {}
-    event['body'] = {"title":"Fix the car engine"} 
+    event = {
+        "path": {
+            "id": "abcdefgh"
+        }
+    }
+
     context = None
 
     result = process(event, context)
+    
+    assert result['statusCode'] == 200
+    assert result['body'] == {'id': 'abcdefgh', 'task': 'Complete the serverless home challenge'}
+
+@mock_aws
+def test_unknow_error():
+    """
+    Tests an unknown error situation
+    """
+    event = {
+       "Invalid event payload"
+    }
+
+    context = None
+    result = process(event, context)
+    
     assert result['statusCode'] == 500
     assert result['body'] == {'error': 'Internal Server Error'}
-

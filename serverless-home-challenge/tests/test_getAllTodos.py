@@ -42,9 +42,8 @@ def test_get_data_from_empty_table():
     result = process(event, context)
     
     assert result['statusCode'] == 200
-    assert json.loads(result['body']) == []
-    assert result['headers']['Content-Type'] == 'application/json'
-    assert result['headers']['Access-Control-Allow-Origin'] == '*'
+    assert result['body'] == []
+
 
 @mock_aws
 def test_get_data_from_populated_table():
@@ -60,15 +59,13 @@ def test_get_data_from_populated_table():
     context = None
 
     result = process(event, context)
-    
+    body = result['body']
+
     assert result['statusCode'] == 200
-    body = json.loads(result['body'])
     assert len(body) == 3
     assert {'id': '1', 'task': 'Complete the serverless home challenge'} in body
     assert {'id': '2', 'task': 'Get an interview'} in body
     assert {'id': '3', 'task': 'Get an job offer'} in body
-    assert result['headers']['Content-Type'] == 'application/json'
-    assert result['headers']['Access-Control-Allow-Origin'] == '*'
 
 
 @mock_aws
@@ -83,8 +80,5 @@ def test_client_error_response(mocker):
 
     result = process(event, context)
 
-    assert result['body'] == json.dumps({"error": "An error occurred (ResourceNotFoundException) when calling the Scan operation: Requested resource not found"})
-    assert result['statusCode'] == 400
-    body = json.loads(result['body'])
-    assert 'error' in body
-    assert result['headers']['Content-Type'] == 'application/json'
+    assert result['body'] == {"error": "An error occurred (ResourceNotFoundException) when calling the Scan operation: Requested resource not found"}
+    assert result['statusCode'] == 404

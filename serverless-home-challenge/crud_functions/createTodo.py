@@ -1,11 +1,12 @@
 from datetime import datetime
 import json
 import boto3
-from botocore.exceptions import ClientError
+from util.responses import Responses
 import uuid
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('todos')
+responses = Responses()
 
 def process(event, context):
     try:
@@ -16,40 +17,31 @@ def process(event, context):
         # else:
         #     request_origin = 'unknown'
         
-        body = json.loads(event['body'])
-        id = str(uuid.uuid4())
-        current_timestamp = datetime.now().isoformat()
-
-        item = {
-            'id': id,
-            'title': body['title'],
-            'metadata': {
-                'createdAt': current_timestamp,
-                'updatedAt': current_timestamp,
-                'createdBy': "request_origin",
-                'updatedBy': None,
-            }
-        }
-        
-        table.put_item(Item=item)
-
-        return {
-            'statusCode': 201,
-            'body': json.dumps(item),
-            'headers': {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            }
-        }
-    
-    
+        title = event['body']['title']
     # Adding validation to check required fields, as required in the challenge specification
-    except KeyError:
-        return {
-            'statusCode': 400,
-            'body': json.dumps({'error': 'Missing required fields'}),
-            'headers': {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            }
+    except KeyError as e:
+        return responses._400({'error': 'Missing required fields'})
+    
+    id = str(uuid.uuid4())
+    current_timestamp = datetime.now().isoformat()
+    item = {
+        'id': id,
+        'title': title,
+        'completed': False,
+        'metadata': {
+            'createdAt': current_timestamp,
+            'updatedAt': current_timestamp,
+            'createdBy': "request_origin",
+            'updatedBy': None,
         }
+    }
+
+    try:
+        response = table.put_item(Item=item)
+        return responses._201({'title':title, 'completed': False})
+    except Exception as e:
+        return responses._500({'error': 'Internal Server Error'})
+    
+
+    
+

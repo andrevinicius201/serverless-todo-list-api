@@ -1,31 +1,18 @@
 import json
 import boto3
+from util.responses import Responses
 from botocore.exceptions import ClientError
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('todos')
+responses = Responses()
 
 def process(event, context):
     
     try:
         response = table.scan()
-        data = response.get('Items', [])            
-        
-        return {
-            'statusCode': 200,
-            'body': json.dumps(data),
-            'headers': {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*' 
-            }
-        }
+        data = response['Items'] if response['Items'] else []
+        return responses._200(data)
         
     except ClientError as e:
-        return {
-            'statusCode': 400,
-            'body': json.dumps({'error': str(e)}),
-            'headers': {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*' 
-            }
-        }
+        return responses._404({'error': str(e)})

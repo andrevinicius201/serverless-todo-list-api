@@ -2,6 +2,12 @@ from datetime import datetime
 import json
 import boto3
 from botocore.exceptions import ClientError
+from util.responses import Responses
+
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table('todos')
+responses = Responses()
+
 
 # Initialize the DynamoDB client
 dynamodb = boto3.resource('dynamodb')
@@ -9,7 +15,7 @@ table = dynamodb.Table('todos')
 
 def process(event, context):
     # Extract the id from path parameters
-    id = event['pathParameters']['id']
+    id = event['path']['id']
     
     # Parse the request body
     body = json.loads(event['body'])
@@ -34,21 +40,8 @@ def process(event, context):
             ConditionExpression="attribute_exists(id)",
             ReturnValues="ALL_NEW"
         )
+        print(response)
+        return responses._201(response['Attributes'])
         
-        return {
-            'statusCode': 201,
-            'body': json.dumps(response['Attributes']),
-            'headers': {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            }
-        }
-    except ClientError as e:
-        return {
-                'statusCode': 404,
-                'body': json.dumps({'error': 'Item not found'}),
-                'headers': {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                }
-            }
+    except ClientError:
+        return responses._404({'error': 'Item not found'})
