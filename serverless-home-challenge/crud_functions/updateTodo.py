@@ -14,12 +14,10 @@ dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('todos')
 
 def process(event, context):
-    # Extract the id from path parameters
+    # Extract the id from path parameters and the payload body
     id = event['path']['id']
-    
-    # Parse the request body
-    body = json.loads(event['body'])
-    
+    body = event['body']
+
     # Prepare the update expression
     update_expression = "SET "
     expression_attribute_values = {}

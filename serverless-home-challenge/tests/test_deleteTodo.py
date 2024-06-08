@@ -40,7 +40,7 @@ def testDeleteTodoNotCompletedItem():
     table.put_item(Item={'id': 'abcdefgh', 'task': 'Complete the serverless home challenge'})
 
     event = {
-        "pathParameters": {
+        "path": {
             "id": "abcdefgh"
         }
     }
@@ -58,7 +58,7 @@ def testDeleteTodoNotExistentItem():
     table = setup_dynamodb_table()
 
     event = {
-        "pathParameters": {
+        "path": {
             "id": "abcdefgh"
         }
     }
@@ -77,15 +77,15 @@ def testDeleteTodoExistingItem():
     table.put_item(Item={'id': 'abcdefgh', 'task': 'Complete the serverless home challenge'})
 
     update_item_status_event = {
-        'pathParameters': {
+        'path': {
             'id': 'abcdefgh'
         },
-        'body': '{\r\n "completed":true\r\n}\r\n', 
+        'body': {"completed":True}
     }
     update_item_status_context = None
     updateTodo.process(update_item_status_event, update_item_status_context)
     event = {
-        "pathParameters": {
+        "path": {
             "id": "abcdefgh"
         }
     }

@@ -67,6 +67,14 @@ functions:
           method: delete
           integration: lambda
           cors: true
+  deleteAllTodos:
+    handler: crud_functions/deleteAllTodos.process
+    events:
+      - http:
+          path: todos/
+          method: delete
+          integration: lambda
+          cors: true
 
 resources:
   Resources:
@@ -90,7 +98,13 @@ resources:
         RestApiId: !Ref ApiGatewayRestApi
         ResponseTemplates:
           application/json: "{\"statusCode\": 400, \"error\": \"$context.error.validationErrorString\"}"
-
+    InvalidAPIKey:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseType: INVALID_API_KEY 
+        RestApiId: !Ref ApiGatewayRestApi
+        ResponseTemplates:
+          application/json: "{\"statusCode\": 403, \"error\": \"You must provide an API key\"}"
 
 custom:
   apiGateway:
@@ -99,12 +113,9 @@ custom:
         name: bodyValidator
         validateRequestBody: true
         validateRequestParameters: true
-  # documentation:
-  #   version: '1'
-  #   title: 'My API'
-  #   description: 'This is my API'
-  #   models: {}
+  pythonRequirements:
+    ddockerizePip: false
 
 plugins:
-  # - serverless-python-requirements
   - serverless-offline
+  - serverless-python-requirements

@@ -44,6 +44,15 @@ class Responses:
             'statusCode': 404,
             'body': data
         }
+
+    @staticmethod
+    def _403(data):
+        if data is None:
+            data = {}
+        return {
+            'statusCode': 403,
+            'body': data
+        }
     
     @staticmethod
     def _409(data):

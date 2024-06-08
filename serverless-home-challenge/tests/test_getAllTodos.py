@@ -56,6 +56,7 @@ def test_get_data_from_populated_table():
     table.put_item(Item={'id': '3', 'task': 'Get an job offer'})
 
     event = {}
+    
     context = None
 
     result = process(event, context)

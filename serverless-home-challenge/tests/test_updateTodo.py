@@ -40,8 +40,8 @@ def testUpdateExistingItemValidPayload():
     table.put_item(Item={'id': 'abcdefgh', 'title': 'Complete AWS home challenge'})
     
     update_item_status_event = {
-        'pathParameters': {"id": "abcdefgh"},
-        'body': '{\r\n    "completed":true\r\n}\r\n',
+        'path': {"id": "abcdefgh"},
+        'body': {"completed":True}
     }
     
     update_item_status_context = None
@@ -56,8 +56,8 @@ def testUpdateNotExistingItem():
     table = setup_dynamodb_table()
     
     update_item_status_event = {
-        'pathParameters': {"id": "abcdefgh"},
-        'body': '{\r\n    "completed":true\r\n}\r\n',
+        'path': {"id": "abcdefgh"},
+        'body': {"completed":True}
     }
     
     update_item_status_context = None
