@@ -18,7 +18,7 @@ def process(event, context):
         if 'Item' in response:
             return responses._200(response['Item'])
         else:
-            return responses._404({'error': 'TO-DO item was not found'})
+            return responses._404({'error': 'No TODO item was found with the given ID'})
         
     except Exception as e:
         return responses._500({'error': 'Internal Server Error'})

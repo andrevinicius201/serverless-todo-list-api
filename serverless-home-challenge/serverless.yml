@@ -4,7 +4,7 @@ service: serverless-home-challenge
 
 provider:
   name: aws
-  runtime: python3.12
+  runtime: python3.10
   region: us-east-1
   iamRoleStatements:
     - Effect: "Allow"

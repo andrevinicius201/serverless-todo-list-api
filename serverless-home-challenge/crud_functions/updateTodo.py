@@ -42,4 +42,4 @@ def process(event, context):
         return responses._201(response['Attributes'])
         
     except ClientError:
-        return responses._404({'error': 'Item not found'})
+        return responses._404({'error': 'No TODO item was found with the given ID'})

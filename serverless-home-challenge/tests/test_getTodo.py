@@ -47,7 +47,7 @@ def test_get_data_from_empty_table():
     result = process(event, context)
     
     assert result['statusCode'] == 404
-    assert result['body'] == {'error': 'TO-DO item was not found'}
+    assert result['body'] == {'error': 'No TODO item was found with the given ID'}
 
 
 @mock_aws

@@ -63,7 +63,7 @@ def testUpdateNotExistingItem():
     update_item_status_context = None
     result = crud_functions.updateTodo.process(update_item_status_event, update_item_status_context)
     assert result['statusCode'] == 404
-    assert result['body'] == {"error": "Item not found"}
+    assert result['body'] == {"error": "No TODO item was found with the given ID"}
 
 @mock_aws
 def testUpdateExistingItemInvalidPayload():

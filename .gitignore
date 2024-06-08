@@ -24,4 +24,9 @@ node_modules
 requirements.txt
 temp
 
+.pytest_cache
+__pycache__
+
 *.pyc
+*.py[cod]
+
