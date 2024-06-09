@@ -1,10 +1,12 @@
 # Serverless Home Challenge
 ### Project Overview
 
-Esse documento descreve o passo a passo para configuração e teste das APIs desenvolvidas para o projeto TODO list. O projeto fornece endpoints para manipulação de itens de uma lista de tarefas. A sessão "anexos" deste documento contém um arquivo de collections do Postman, descrevendo todos os endpoints e conténdo os payloads e demais configurações necessárias para seu uso. Os requisitos referentes ao desenvolvimento deste projeto estão descritos [neste documento].
+Esse documento descreve o passo a passo para configuração e teste das APIs desenvolvidas para o projeto TODO list. O projeto fornece endpoints para manipulação de itens de uma lista de tarefas. Os requisitos referentes ao desenvolvimento deste projeto estão descritos: [neste documento](./serverless-home-challenge.pdf).
 
 Diagrama de visão geral da aplicação: 
 ![Build Status](./serverless-challenge.drawio.png)
+
+Todos os endpoints configurados para esse projeto, instruções de uso e configurações necessárias estão descritos nessa [postman collection](./serverless-home-challenge.pdf). **Por favor faça o download** antes de seguir.
 
 **Importante:** Para validação deste projeto poderão ser utilizados os seguintes caminhos:
 
@@ -16,7 +18,7 @@ Diagrama de visão geral da aplicação:
 
 **Importante:** Independemente de qual caminho de validação será utilizado, ressalta-se que o projeto também conta um conjunto de testes unitários a fim de validar o comportamento das funções Lambda envolvidas. Para isso utilizou-se a biblioteca "pytest" juntamente com a biblioteca "moto" para simulação do comportamento de serviços AWS. 
 
-> Note: Recomendo fortemente o uso do Software Postman [link] para validação dos endpoints utilizando as collections fornecidas, que já estão configuradas para uso.
+> Note: Recomendo fortemente o uso do Software Postman para validação dos endpoints utilizando as collections fornecidas, que já estão configuradas para uso.
 
 ### Setup Guide
 ##### Testes utilizando a API já hospedada
@@ -61,9 +63,18 @@ A partir daqui, basta abrir a Postman collection fornecida e atualizar o valor d
 
 2) Além dos testes unitários, pode-se usar o serverless-offline para testar suas APIs localmente. Para isso, basta acessar o diretório serverless-home-challenge e executar o comando `serverless offline`. Isso viabilizará testes locais utilizando por padrão o endereço localhost:3000 como url base de suas APIs. Após essa configuração, você poderá utilizar o postman ou uma janela de terminal para executar requisições como `curl http://localhost:3000/dev/todos`
 
+### Architecture discussion
+As configurações dos componentes de arquitetura deste projeto **não** foram pensadas para um cenário real pronto para produção. Isso significa que foram mantidas as configurações padrão, sem maiores preocupações quanto a detalhes de configuração. Alguns desses detalhes incluem.
+ - **Funções Lambda**: A AWS permite fazer um ajuste fino da capacidade de CPU e memória a ser alocada nas funções, bem como configurações de conectividade (endpoint público) e pré-aquecimento de ambiente de execução a fim de evitar cold-starts. 
+- **Integração entre API Gateway, Lambda e DynamoDB**: a fim de seguir apropriadamente as especificações do documento de requisitos, foram utilizadas funções Lambda para representar o comportamento de cada endpoint. Apesar disso, é importante mencionar que o serviço Amazon API Gateway conta com integração nativa com o DynamoDB, permitindo realizar operações de CRUD sem a necessidade de uma função Lambda intermediando. Isso pode ser benéfico para diminuir a latência das requisições e o custo do projeto, eliminando um componente de arquitetura.
+- **Tipo de endpoint do API Gateway**: O API Gateway permite a configuração de diferentes de tipos de deployment de endpoints. Esse projeto faz uso de uma API do tipo REST hospedada em configuração EDGE-optimized, que faz uso das CDNs da AWS para distribuição dos pontos de presença. Outras configurações estão disponíveis, como as APIs regionais e privadas. Além disso existe a possibilidade de configurar o modelo da API para o tipo HTTP, que apresenta menor custo em troca de oferecer um conjunto reduzido de funcionalidades para os endpoints.
+- **Configuração de CORS do API Gateway**: Para simplificação, todos os endpoints deste projeto estão configurados para permitir requisições de origens diferentes do host (CORS), o que facilita a integração com aplicações de front-end em ambiente de testes. Para ambientes de produção é necessário ajuste fino nessa configuração.
+- **Tabela do DynamoDB**: As tabelas do DynamoDB podem ser configuradas para suportar diferentes formas de capacidade de provisionamento de leitura e escrita, o que não foi levado em consideração no escopo de entrega deste projeto. Além disso, para projetos de maior porte é possível trabalhar com índices para otimização de desempenho em consultas, por meio de Global Secondary Indexes ou Local Secondary Indexes.
 
-
-
+### Outros pontos técnicos para discussão
+- **Consultas no DynamoDB**: O código utilizado neste projeto faz uso das API de scan() do dynamodb. Por se tratar de um ambiente de demonstração e validação, isso não afeta a aplicação de modo geral, porém em grandes bases de dados recomenda-se utilizar as APIs de query(), que são menos custosas em termos de performance, pois consomem menos capacidade de leitura por ser restritas a partições específicas que se queira consultar.
+- **Validações a nível de API Gateway**: Todos os endpoints que requerem o fornecimento de um body estão sendo validados a nível do API Gateway. Isso impede que payloads com corpos inválidos cheguem às funções Lambda, evitando desperdício de capacidade de processamento e custos desnecessários.
+- **Testes unitários**: Os testes desenvolvidos estão restritos a validação de comportamento das funções Lambda, sem maiores preocupações quanto à sua integração com o Amazon API Gateway. Isso porque as validações de payload estão sendo realizadas a nível de API Gateway, que serão o único caminho de acesso às funcionalidades dessas funções.
 
 
 
