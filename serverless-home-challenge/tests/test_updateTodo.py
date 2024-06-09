@@ -31,7 +31,7 @@ def setup_dynamodb_table():
     return table
 
 @mock_aws
-def testUpdateExistingItemValidPayload():
+def testUpdateExistentItem():
     """
     Updates existing todo item
     """
@@ -52,7 +52,10 @@ def testUpdateExistingItemValidPayload():
     assert result['body']['completed'] == True
 
 @mock_aws 
-def testUpdateNotExistingItem():
+def testUpdateNotExistentItem():
+    """
+    Tries to update a non-existent todo item
+    """
     table = setup_dynamodb_table()
     
     update_item_status_event = {
@@ -66,7 +69,19 @@ def testUpdateNotExistingItem():
     assert result['body'] == {"error": "No TODO item was found with the given ID"}
 
 @mock_aws
-def testUpdateExistingItemInvalidPayload():
-    pass
+def test_unknow_error():
+    """
+    Forces an internal server error by sending an invalid event payload
+    """
+    event = {
+       "Invalid event payload"
+    }
+
+    context = None
+    result = crud_functions.updateTodo.process(event, context)
+    
+    assert result['statusCode'] == 500
+    assert result['body'] == {'error': 'Internal Server Error'}
+
 
 

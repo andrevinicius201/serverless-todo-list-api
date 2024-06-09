@@ -98,13 +98,20 @@ resources:
         RestApiId: !Ref ApiGatewayRestApi
         ResponseTemplates:
           application/json: "{\"statusCode\": 400, \"error\": \"$context.error.validationErrorString\"}"
-    InvalidAPIKey:
+    GatewayResponseInvalidAPIKey:
       Type: 'AWS::ApiGateway::GatewayResponse'
       Properties:
         ResponseType: INVALID_API_KEY 
         RestApiId: !Ref ApiGatewayRestApi
         ResponseTemplates:
           application/json: "{\"statusCode\": 403, \"error\": \"You must provide an API key\"}"
+    GatewayResponseResourceNotAvailable:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseType: MISSING_AUTHENTICATION_TOKEN 
+        RestApiId: !Ref ApiGatewayRestApi
+        ResponseTemplates:
+          application/json: "{\"statusCode\": 403, \"error\": \"Resource is not available\"}"
 
 custom:
   apiGateway:

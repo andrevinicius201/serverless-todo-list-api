@@ -30,6 +30,23 @@ def setup_dynamodb_table():
     table.meta.client.get_waiter('table_exists').wait(TableName='todos')
     return table
 
+@mock_aws
+def testDeleteTodoNotExistentItem():
+    """
+    Tries to delete an non-existent item
+    """
+    table = setup_dynamodb_table()
+
+    event = {
+        "path": {
+            "id": "abcdefgh"
+        }
+    }
+    context = None
+
+    result = process(event, context)
+    assert result['statusCode'] == 404
+    assert result['body'] == {'error': 'No TODO item was found with the given ID'}
 
 @mock_aws
 def testDeleteTodoNotCompletedItem():
@@ -50,40 +67,15 @@ def testDeleteTodoNotCompletedItem():
     assert result['statusCode'] == 409
     assert result['body'] == {'error': 'The Specified TODO item state must be "completed" in order to delete it'}
 
-@mock_aws
-def testDeleteTodoNotExistentItem():
-    """
-    Tries to delete an item using a not existent item id
-    """
-    table = setup_dynamodb_table()
-
-    event = {
-        "path": {
-            "id": "abcdefgh"
-        }
-    }
-    context = None
-
-    result = process(event, context)
-    assert result['statusCode'] == 404
-    assert result['body'] == {'error': 'No TODO item was found with the given ID'}
 
 @mock_aws
-def testDeleteTodoExistingItem():
+def testDeleteTodoExistentItem():
     """
     Deletes successfully an item from the table
     """
     table = setup_dynamodb_table()
-    table.put_item(Item={'id': 'abcdefgh', 'task': 'Complete the serverless home challenge'})
+    table.put_item(Item={'id': 'abcdefgh', 'task': 'Complete the serverless home challenge', "completed":True})
 
-    update_item_status_event = {
-        'path': {
-            'id': 'abcdefgh'
-        },
-        'body': {"completed":True}
-    }
-    update_item_status_context = None
-    updateTodo.process(update_item_status_event, update_item_status_context)
     event = {
         "path": {
             "id": "abcdefgh"
@@ -93,3 +85,23 @@ def testDeleteTodoExistingItem():
 
     result = process(event, context)
     assert result['statusCode'] == 204
+
+@mock_aws
+def testDeleteInvalidPayload():
+    """
+    Forces a client error by send a request without providing the todo item ID
+    """
+    table = setup_dynamodb_table()
+    table.put_item(Item={'id': 'abcdefgh', 'task': 'Complete the serverless home challenge'})
+
+    event = {
+        "path": {
+            "test": "abcdefgh"
+        }
+    }
+    context = None
+
+    result = process(event, context)
+    assert result['statusCode'] == 400
+    assert result['body'] == {'error': 'A path must be specified with a todo id'}
+

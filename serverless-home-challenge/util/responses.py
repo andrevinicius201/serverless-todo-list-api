@@ -14,8 +14,11 @@ class Responses:
         if data is None:
             data = {}
         return {
-            'statusCode': 201,
-            'body': data
+            "statusCode": 201,
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "body": data
         }
 
     @staticmethod

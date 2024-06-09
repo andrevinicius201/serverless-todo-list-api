@@ -14,5 +14,5 @@ def process(event, context):
         data = response['Items'] if response['Items'] else []
         return responses._200(data)
         
-    except ClientError as e:
-        return responses._404({'error': str(e)})
+    except Exception as e:
+        return responses._500({'error': 'Internal Server Error'})

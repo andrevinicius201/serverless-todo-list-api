@@ -31,7 +31,7 @@ def setup_dynamodb_table():
 @mock_aws
 def test_get_data_from_empty_table():
     """
-    Runs a get all operation against an item that not exists
+    Runs a get all operation against an non-existent item
     """
     table = setup_dynamodb_table()
     table.put_item(Item={'id': 'zzzzzzz', 'task': 'Complete the serverless home challenge'})
@@ -53,7 +53,7 @@ def test_get_data_from_empty_table():
 @mock_aws
 def test_get_data_from_populated_table():
     """
-    Runs a get all operation against an existing item
+    Runs a get all operation against an existent item
     """
     table = setup_dynamodb_table()
     table.put_item(Item={'id': 'abcdefgh', 'task': 'Complete the serverless home challenge'})
@@ -71,10 +71,25 @@ def test_get_data_from_populated_table():
     assert result['statusCode'] == 200
     assert result['body'] == {'id': 'abcdefgh', 'task': 'Complete the serverless home challenge'}
 
+
+@mock_aws
+def test_error_response(mocker):
+    """
+    Forces an internal server error by trying to get data from a non-existent table
+    """
+
+    event = {}
+    context = None
+
+    result = process(event, context)
+
+    assert result['body'] == {'error': 'Internal Server Error'}
+    assert result['statusCode'] == 500
+
 @mock_aws
 def test_unknow_error():
     """
-    Tests an unknown error situation
+    Forces an internal server error by sending an invalid event payload
     """
     event = {
        "Invalid event payload"

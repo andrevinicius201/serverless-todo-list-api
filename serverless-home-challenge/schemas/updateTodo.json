@@ -9,6 +9,10 @@
         "type": "string"
       }
     },
-    "required": ["completed"],
-    "additionalProperties": false
+    "required": [],
+    "additionalProperties": false,
+    "oneOf": [
+      { "required": ["completed"] },
+      { "required": ["title"] }
+    ]
   }

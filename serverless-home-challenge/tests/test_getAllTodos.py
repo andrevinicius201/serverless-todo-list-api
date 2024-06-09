@@ -48,12 +48,11 @@ def test_get_data_from_empty_table():
 @mock_aws
 def test_get_data_from_populated_table():
     """
-    Runs a get all operation agains a table with 3 todo items
+    Runs a get all operation agains a table with 2 todo items
     """
     table = setup_dynamodb_table()
     table.put_item(Item={'id': '1', 'task': 'Complete the serverless home challenge'})
-    table.put_item(Item={'id': '2', 'task': 'Get an interview'})
-    table.put_item(Item={'id': '3', 'task': 'Get an job offer'})
+    table.put_item(Item={'id': '2', 'task': 'Deploy it to AWS'})
 
     event = {}
     
@@ -63,23 +62,36 @@ def test_get_data_from_populated_table():
     body = result['body']
 
     assert result['statusCode'] == 200
-    assert len(body) == 3
+    assert len(body) == 2
     assert {'id': '1', 'task': 'Complete the serverless home challenge'} in body
-    assert {'id': '2', 'task': 'Get an interview'} in body
-    assert {'id': '3', 'task': 'Get an job offer'} in body
+    assert {'id': '2', 'task': 'Deploy it to AWS'} in body
 
 
 @mock_aws
-def test_client_error_response(mocker):
-    mocker.patch('boto3.resource', side_effect=ClientError(
-        error_response={'Error': {'Code': 'ResourceNotFoundException', 'Message': 'Requested resource not found'}},
-        operation_name='scan'
-    ))
+def test_error_response(mocker):
+    """
+    Forces an internal server error by trying to get data from a non-existent table
+    """
 
     event = {}
     context = None
 
     result = process(event, context)
 
-    assert result['body'] == {"error": "An error occurred (ResourceNotFoundException) when calling the Scan operation: Requested resource not found"}
-    assert result['statusCode'] == 404
+    assert result['body'] == {'error': 'Internal Server Error'}
+    assert result['statusCode'] == 500
+
+@mock_aws
+def test_unknow_error():
+    """
+    Forces an internal server error by sending an invalid event payload
+    """
+    event = {
+       "Invalid event payload"
+    }
+
+    context = None
+    result = process(event, context)
+    
+    assert result['statusCode'] == 500
+    assert result['body'] == {'error': 'Internal Server Error'}

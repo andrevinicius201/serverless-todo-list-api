@@ -1,98 +1,65 @@
-<!--
-title: 'AWS Simple HTTP Endpoint example in Python'
-description: 'This template demonstrates how to make a simple HTTP API with Python running on AWS Lambda and API Gateway using the Serverless Framework.'
-layout: Doc
-framework: v4
-platform: AWS
-language: python
-authorLink: 'https://github.com/serverless'
-authorName: 'Serverless, Inc.'
-authorAvatar: 'https://avatars1.githubusercontent.com/u/13742415?s=200&v=4'
--->
+# Serverless Home Challenge
+### Project Overview
 
-# Serverless Framework Python HTTP API on AWS
+Esse documento descreve o passo a passo para configuração e teste das APIs desenvolvidas para o projeto TODO list. O projeto fornece endpoints para manipulação de itens de uma lista de tarefas. A sessão "anexos" deste documento contém um arquivo de collections do Postman, descrevendo todos os endpoints e conténdo os payloads e demais configurações necessárias para seu uso. Os requisitos referentes ao desenvolvimento deste projeto estão descritos [neste documento].
 
-This template demonstrates how to make a simple HTTP API with Python running on AWS Lambda and API Gateway using the Serverless Framework.
+Diagrama de visão geral da aplicação: [draw io]
 
-This template does not include any kind of persistence (database). For more advanced examples, check out the [serverless/examples repository](https://github.com/serverless/examples/) which includes DynamoDB, Mongo, Fauna and other examples.
+**Importante:** Para validação deste projeto poderão ser utilizados os seguintes caminhos:
+**1-** Utilizando os endpoints que já estão hospedados em ambiente AWS na conta do desenvolvedor do projeto (André Vinícius). Para seguir com este caminho, nenhum setup adicional é necessário, dado que a API (API Gateway), funções Lambda e banco de dados DynamoDB já estão hospedados e prontos para uso. Essa API somente receberá requisições contendo uma API-key válida, que já está configurada como uma variável de collection do Postman fornecida na sessão "anexos" e é necessária em todos os endpoints. 
 
-## Usage
+**2-** Fazendo deploy do projeto em qualquer conta AWS. A configuração de todos os recursos foi feita via Serverless Framework. O projeto está pronto para ser implantado de forma automatizada e as instruções estão fornecidas na sessão "setup". 
 
-### Deployment
+**3-** Testes locais: Neste projeto utilizou-se o plugin serverless-offline, que permite um ciclo de desenvolvimento e testes mais rápidos por meio de endpoints rodando em ambiente local, sem necessidade de publicação em ambiente AWS a todo momento.
 
-```
-serverless deploy
-```
+**Importante:** Independemente de qual caminho de validação será utilizado, ressalta-se que o projeto também conta um conjunto de testes unitários a fim de validar o comportamento das funções Lambda envolvidas. Para isso utilizou-se a biblioteca "pytest" juntamente com a biblioteca "moto" para simulação do comportamento de serviços AWS. 
 
-After deploying, you should see output similar to:
+> Note: Recomendo fortemente o uso do Software Postman [link] para validação dos endpoints utilizando as collections fornecidas, que já estão configuradas para uso.
 
-```
-Deploying "aws-python-http-api" to stage "dev" (us-east-1)
+### Setup Guide
+##### Testes utilizando a API já hospedada
+Como mencionado anteriormente, para seguir este caminho de validação basta fazer o download da collection do Postman disponível na sessão "anexo". **Importante:** O caminho raíz da collection (Serverless Home Challenge - TODO List) contém uma descrição geral do serviço e contém um link de conteúdo **"View complete documentation"**, cujo conteúdo descreve detalhadamente cada um dos endpoints disponíveis, campos e formatos exigidos e exemplos de payloads válidos e inválidos.
 
-✔ Service deployed to stack aws-python-http-api-dev (85s)
+##### Fazer deploy automatizado em ambiente AWS
+Para seguir com a configuração do projeto na sua própria conta AWS, siga o passo-a-passo abaixo:
+###### Pré requisitos (por favor não avance para a etapa de setup antes de validar os seguintes itens): 
+Conta AWS criada; 
+Node JS instalado (necessário para execução dos comandos do Serverless Framework);
+Python a partir da versão 3.10 (necessário caso queira rodar os endpoints de API localmente por meio do serverless-offline plugin);
+Usuário IAM da AWS configurado para acesso programático via Access Keys. **Caso ainda não tenha esse usuário AWS com acesso programático configurado**, execute os seguintes passos:
+ - Dentro de sua conta AWS, acesse o console do serviço IAM
+ - Em "users", clique em "create user", forneça um nome de sua preferência e avance
+ - Na tela seguinte, selecione "Attach policies directly" e inclua a policy "AdministratorAccess". Essa policy deverá ser utilizada apenar em ambientes de testes para simplificar o processo de validação dos endpoints. Por razões de segurança ela não deverá ser utilizada em ambiente de produção e deverá ser substituida por uma que tenha apenas os acessos necessários. 
+ - Avance para a tela de revisão e conclua a criação do usuário.
+ - De volta à tela de listagem de usuários, selecione o usuário que você acabou de criar, acesse a aba "Security Credentials" e clique no botão "Create Access Key". Em "use case", Selecione a opção "Command Line Interface (CLI)" e marque a caixa de confirmação. Após confirmar o procedimento, você receberá os valores de "Access Key" e "Secret access key". Eles serão necessários para a configuração do Serverless Framework, permitindo que o mesmo faça deploy de recursos em sua conta AWS. 
+    
+###### Setup do ambiente: 
+ - Realize o download deste projeto utilizando o meio de sua preferência (Git Clone ou download .zip file)
+ - Utilizando um terminal, execute o comando `npm i serverless -g`. Isso instalará o serverless framework em sua máquina e o tornará acessível a partir de qualquer diretório.
+ - Crie um usuário na AWS e habilite as Access Keys.
+ - Acesse o diretório raiz do projeto baixado e execute o comando `serverless config`. 
+ - Ainda no diretório raiz do projeto, faça a instalação dos plugins necessários, através dos comandos `npm install serverless-offline --save-dev` e `npm install serverless-python-requirements` 
+ - Para seguir com o deploy, execute o comando `serverless deploy` 
 
-endpoint: GET - https://6ewcye3q4d.execute-api.us-east-1.amazonaws.com/
-functions:
-  hello: aws-python-http-api-dev-hello (2.3 kB)
-```
+###### Ajustes finais: 
+Neste ponto sua aplicação já deve estar hospedada em sua conta AWS e pronta para uso. Para consultar seu endpoint de requisições, acesse sua conta AWS e, no serviço Amazon API Gateway, selecione a API que acabou de ser criada (serverless-challenge). No menu lateral, acesse "stages". Nesse tela, copie o valor de "Invoke URL". Essa será a URL de base para todas as chamadas em sua API. 
 
-_Note_: In current form, after deployment, your API is public and can be invoked by anyone. For production deployments, you might want to configure an authorizer. For details on how to do that, refer to [http event docs](https://www.serverless.com/framework/docs/providers/aws/events/apigateway/).
+A partir daqui, basta abrir a Postman collection fornecida e atualizar o valor da variável "serverless_api_challenge_url". Para isso, na raiz da collection, basta acessar a aba "variables" e substituir os campos "initial value" e "current value" com a sua URL de invocação, conforme mostrado abaixo:
+[print 1]
+[print 2]
 
-### Invocation
+> Note: Utilizando o método de deploy em sua própria conta, não será necessário o uso de API keys nas requisições, pois essa configuração não faz parte do template fornecido no projeto e foi configurada separadamente.
 
-After successful deployment, you can call the created application via HTTP:
 
-```
-curl https://xxxxxxx.execute-api.us-east-1.amazonaws.com/
-```
 
-Which should result in response similar to the following (removed `input` content for brevity):
 
-```json
-{
-  "message": "Go Serverless v4.0! Your function executed successfully!"
-}
-```
 
-### Local development
 
-You can invoke your function locally by using the following command:
 
-```
-serverless invoke local --function hello
-```
+[![N|Solid](https://cldup.com/dTxpPi9lDf.thumb.png)](https://nodesource.com/products/nsolid)
 
-Which should result in response similar to the following:
+[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
-```json
-{
-  "statusCode": 200,
-  "body": "{\n  \"message\": \"Go Serverless v4.0! Your function executed successfully!\"}"
-}
-```
 
-Alternatively, it is also possible to emulate API Gateway and Lambda locally by using `serverless-offline` plugin. In order to do that, execute the following command:
 
-```
-serverless plugin install -n serverless-offline
-```
 
-It will add the `serverless-offline` plugin to `devDependencies` in `package.json` file as well as will add it to `plugins` in `serverless.yml`.
-
-After installation, you can start local emulation with:
-
-```
-serverless offline
-```
-
-To learn more about the capabilities of `serverless-offline`, please refer to its [GitHub repository](https://github.com/dherault/serverless-offline).
-
-### Bundling dependencies
-
-In case you would like to include 3rd party dependencies, you will need to use a plugin called `serverless-python-requirements`. You can set it up by running the following command:
-
-```
-serverless plugin install -n serverless-python-requirements
-```
-
-Running the above will automatically add `serverless-python-requirements` to `plugins` section in your `serverless.yml` file and add it as a `devDependency` to `package.json` file. The `package.json` file will be automatically created if it doesn't exist beforehand. Now you will be able to add your dependencies to `requirements.txt` file (`Pipfile` and `pyproject.toml` is also supported but requires additional configuration) and they will be automatically injected to Lambda package during build process. For more details about the plugin's configuration, please refer to [official documentation](https://github.com/UnitedIncome/serverless-python-requirements).

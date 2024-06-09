@@ -46,9 +46,9 @@ def testAddTodoValidPayload():
     assert result['body'] == {'title':'Fix the car engine', 'completed':False}
 
 @mock_aws
-def testAddTodoInvalidPayload():
+def testAddTodoInvalidPayloadMissingField():
     """
-    Tries to add a new item in the table with an invalid payload (sending 'task_name' instead 'title'). Input does not match the required schema.
+    Tries to add a new item in the table with an invalid payload (sending 'task_name' instead 'title') so that the input does not match the required schema.
     """
     table = setup_dynamodb_table()
 
@@ -60,10 +60,11 @@ def testAddTodoInvalidPayload():
     assert result['statusCode'] == 400
     assert result['body'] == {'error': 'Missing required fields'}
 
+
 @mock_aws
-def testAddTodoInternalServerError():
+def test_error_response():
     """
-    Forces an internal server error by trying to populate an inexisting table.
+    Forces an internal server error by trying to populate an non-existent table.
     """
 
     event = {}

@@ -8,27 +8,27 @@ dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('todos')
 responses = Responses()
 
-
-# Initialize the DynamoDB client
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('todos')
 
 def process(event, context):
-    # Extract the id from path parameters and the payload body
-    id = event['path']['id']
-    body = event['body']
-
-    # Prepare the update expression
-    update_expression = "SET "
-    expression_attribute_values = {}
-    for key, value in body.items():
-        update_expression += f"{key} = :{key}, "
-        expression_attribute_values[f":{key}"] = value
     
-    #Get local time in order to update metadata
-    current_timestamp = datetime.now().isoformat()
-    update_expression+= "updatedAt = :updatedAt"
-    expression_attribute_values[":updatedAt"] = current_timestamp
+    try:
+        id = event['path']['id']
+        body = event['body']
+
+        update_expression = "SET "
+        expression_attribute_values = {}
+        for key, value in body.items():
+            update_expression += f"{key} = :{key}, "
+            expression_attribute_values[f":{key}"] = value
+        
+        current_timestamp = datetime.now().isoformat()
+        update_expression+= "updatedAt = :updatedAt"
+        expression_attribute_values[":updatedAt"] = current_timestamp
+    
+    except Exception as e:
+        return responses._500({'error': 'Internal Server Error'})
         
     try:
         response = table.update_item(
@@ -38,7 +38,6 @@ def process(event, context):
             ConditionExpression="attribute_exists(id)",
             ReturnValues="ALL_NEW"
         )
-        print(response)
         return responses._201(response['Attributes'])
         
     except ClientError:
