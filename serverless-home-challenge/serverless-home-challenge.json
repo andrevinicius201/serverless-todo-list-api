@@ -1,0 +1,364 @@
+{
+	"info": {
+		"_postman_id": "0b976aeb-d509-4bd4-87d0-5b8eb0b6caf3",
+		"name": "Serverless Home Challenge - TODO List",
+		"description": "This collection describes how to use the TODO list application endpoints. It was developed as part of the serverless-home-challenge.\n\nThe **endpoints** provided enable the following actions:\n\n- Query of all existing todos (GET /todos)\n- Query a specific todo by its ID (GET /todos/{id})\n- Registering a new todo (POST /todos/)\n- Updating the attributes of an existing todo (PUT /todos/{id})\n- Deleting a todo (DELETE/todos/{id}). Restriction: A TODO item can only be deleted after its “**completed**” fiel has been set to true. To do this, the **update** endpoint must be used.\n    \n\n**IMPORTANT:** The endpoints of this service require the use of an API key previously configured by the candidate (André Vinícius), so that all requests must receive the **x-api-key** header. The value provided in this collection is already functional and should not be changed. If you want to run tests using curl, serverless-offline or some other method, please remember to add as a request header.\n\nThe configured API Key will allow a request rate of **3 request per second**, at a maximum amount of **1000 requests** per day for project validation.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9970075"
+	},
+	"item": [
+		{
+			"name": "Get All Todos",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{serverless_api_challenge_api_key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{serverless_api_challenge_url}}/todos/",
+					"host": [
+						"{{serverless_api_challenge_url}}"
+					],
+					"path": [
+						"todos",
+						""
+					]
+				},
+				"description": "Returns all TODO items registered. No **body** content is accepted"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Todo",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{serverless_api_challenge_api_key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{serverless_api_challenge_url}}/todos/123456",
+					"host": [
+						"{{serverless_api_challenge_url}}"
+					],
+					"path": [
+						"todos",
+						"123456"
+					]
+				},
+				"description": "Returns a TODO item specified in the request path. Please replace the example id with a valid one. No **body** content is accepted"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Todo",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{serverless_api_challenge_api_key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\":\"Clean my bedroom\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{serverless_api_challenge_url}}/todos/",
+					"host": [
+						"{{serverless_api_challenge_url}}"
+					],
+					"path": [
+						"todos",
+						""
+					]
+				},
+				"description": "Creates a new TODO item. This endpoint **requires** a \"**title**\" field with a string value type. Additional fields are not allowed.\n\nThis request shows a valid **body** payload."
+			},
+			"response": []
+		},
+		{
+			"name": "Create Todo (invalid)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{serverless_api_challenge_api_key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"unkown_field\":\"Consertar o computador\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{serverless_api_challenge_url}}/todos",
+					"host": [
+						"{{serverless_api_challenge_url}}"
+					],
+					"path": [
+						"todos"
+					]
+				},
+				"description": "Creates a new TODO item. This endpoint **requires** a \"**title**\" field with a string value type. Additional fields are not allowed.\n\nThis requests shows an **invalid body payload** for a new todo creation. It should return an error because it contains two problems:\n\n- an unknow field is being sent.\n- a \"title\" field, which is required, is missing"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Todo",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "authUrl",
+							"value": "https://serverless-challenge.auth.us-east-1.amazoncognito.com/oauth2/authorize?client_id=1ph9lrtnn8aeak3vmmf6j61a2c&response_type=token&scope=email+openid+phone&redirect_uri=http%3A%2F%2Flocalhost%3A3000",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "http://localhost:3000/",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "grant_type",
+							"value": "implicit",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "serverless_auth_token",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{serverless_api_challenge_api_key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\":\"This is an optional new title\",\r\n    \"completed\":true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{serverless_api_challenge_url}}/todos/12345",
+					"host": [
+						"{{serverless_api_challenge_url}}"
+					],
+					"path": [
+						"todos",
+						"12345"
+					]
+				},
+				"description": "Updates an existent TODO item. This endpoint **requires at least one** two fields: \"**title**\" (string) and \"**completed**\" (boolean). Additional fields are not allowed. Please replace the example id with a valid one.\n\nThis request shows a valid **body** payload for a new todo creation"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Todo - Invalid Request",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{serverless_api_challenge_api_key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"done\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{serverless_api_challenge_url}}/todos/12345",
+					"host": [
+						"{{serverless_api_challenge_url}}"
+					],
+					"path": [
+						"todos",
+						"12345"
+					]
+				},
+				"description": "Updates an existent TODO item. This endpoint **requires at least one** two fields: \"**title**\" (string) and \"**completed**\" (boolean). Additional fields are not allowed. Please replace the example id with a valid one.\n\nThis requests shows an **invalid body payload** for a new todo creation. It should return an error because the provided field \"done\" is not supported."
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Todo",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{serverless_api_challenge_api_key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{serverless_api_challenge_url}}/todos/12345",
+					"host": [
+						"{{serverless_api_challenge_url}}"
+					],
+					"path": [
+						"todos",
+						"12345"
+					]
+				},
+				"description": "Deletes a TODO item specified in the request path. Please replace the example id with a valid one. No **body** content is accepted"
+			},
+			"response": []
+		},
+		{
+			"name": "Unknow Endpoint",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{serverless_api_challenge_api_key}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{serverless_api_challenge_url}}/random_field/",
+					"host": [
+						"{{serverless_api_challenge_url}}"
+					],
+					"path": [
+						"random_field",
+						""
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				},
+				"description": "This request shows the return message for api calls to invalid endpoints and methods."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "serverless_api_challenge_url",
+			"value": "https://x76xxzb3ke.execute-api.us-east-1.amazonaws.com/dev",
+			"type": "string"
+		},
+		{
+			"key": "serverless_api_challenge_api_key",
+			"value": "AtDjvT95YPZyoVqe5epH4ZutFc73rQ9fmKko2n50",
+			"type": "string"
+		}
+	]
+}

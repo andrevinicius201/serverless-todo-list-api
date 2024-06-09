@@ -5,9 +5,9 @@
 This document describes the step-by-step process for configuring and testing the APIs developed for the TODO list project. The project provides endpoints for manipulating items in a task list. The requirements relating to the evaluation of this project are described: [in this document](./serverless-home-challenge.pdf).
 
 Application overview diagram:
-![Application Diagram](./serverless-challenge.drawio.png)
+![Application Diagram](./media/serverless-challenge.drawio.png)
 
-All endpoints configured for this project, usage instructions and necessary configurations are described in this [postman collection](./serverless-home-challenge.json). **Please download it** before proceeding.
+All endpoints configured for this project, usage instructions and necessary configurations are described in this [postman collection](./media/serverless-home-challenge.json). **Please download it** before proceeding.
 
 **Importante:** Para validação deste projeto poderão ser utilizados os seguintes caminhos:
 **Important:** There are many available methods to validate this project. The items below gives an overview of each method.
@@ -24,14 +24,14 @@ All endpoints configured for this project, usage instructions and necessary conf
 **Important:** Regardless of which validation method will be used, it should be noted that the project also has a set of unit tests in order to validate the behavior of the Lambda functions involved. Instructions on how to proceed with this tests are also provided below in this document.
 
 > Note: Recomendo fortemente o uso do Software Postman para validação dos endpoints utilizando as collections fornecidas, que já estão configuradas para uso.
-> Note: I strongly recommend using the software Postman to validate the endpoints. It is also recommended to use [this postman collection](./serverless-home-challenge.pdf), which is already configured for use.
+> Note: I strongly recommend using the software Postman to validate the endpoints. It is also recommended to use [this postman collection](./media/serverless-home-challenge.pdf), which is already configured for use.
 
 ### Setup Guide
 ##### Tests using the already hosted API
 As mentioned previously, to follow this validation method simply download the Postman collection and open it using Postman.
 **Important:** The root path of the collection (Serverless Home Challenge - TODO List) contains a general description of the service and contains a link to **"View complete documentation"**, whose content describes in detail each of the available endpoints, required fields and formats, and examples of valid and invalid payloads:
 
-![Example of postman screen](./postman_variable_setup.png)
+![Example of postman screen](./media/postman_variable_setup.png)
 ##### Automated deployment in a separate AWS environment
 To continue setting up the project in your own AWS account, follow the step-by-step instructions below:
 
@@ -61,7 +61,7 @@ At this point, your application should already be hosted in your AWS account and
 
 From here, simply open the provided Postman collection and update the value of the "serverless_api_challenge_url" variable. To do this, in the root of the collection, simply access the "variables" tab and replace the "initial value" and "current value" fields with your invocation URL, as shown below:
 
-![Setting postman variable](./postman_variable_setup.png)
+![Setting postman variable](./media/postman_variable_setup.png)
 
 > Note: Using the deployment method in your own account, it will not be necessary to use API keys, as this configuration is not part of the project template and it was configured separately.
 
