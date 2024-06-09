@@ -2,7 +2,7 @@
 ### Project Overview
 
 
-This document describes the step-by-step process for configuring and testing the APIs developed for the TODO list project. The project provides endpoints for manipulating items in a task list. The requirements relating to the evaluation of this project are described: [in this document](./serverless-home-challenge.pdf).
+This document describes the step-by-step process for configuring and testing the APIs developed for the TODO list project. The project provides endpoints for manipulating items in a task list. The requirements relating to the evaluation of this project are described: [in this document](./media/serverless-home-challenge.pdf).
 
 Application overview diagram:
 ![Application Diagram](./media/serverless-challenge.drawio.png)
