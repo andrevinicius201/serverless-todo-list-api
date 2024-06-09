@@ -56,8 +56,7 @@ A partir daqui, basta abrir a Postman collection fornecida e atualizar o valor d
  - Dentro do diretório "serverless-home-challenge", executar os comandos `pip install -r requirements.txt`. Isso irá configurar as bibliotecas pytest, moto e boto3.
  - Após a instalação das bibliotecas, basta executar o comando `pytest`, que identificará automaticamente todos os arquivos de teste (localizados no diretório "tests" e executará todos os casos descritos). Em cada um dos casos, há uma descrição da funcionalidade a ser testada.
 
-2) Além dos testes unitários, pode-se usar o serverless-offline para testar suas APIs localmente. Para isso, basta acessar o diretório serverless-home-challenge e executar o comando `serverless offline`. Isso viabilizará testes locais utilizando por padrão o endereço localhost:3000 como url base de suas APIs. 
-
+2) Além dos testes unitários, pode-se usar o serverless-offline para testar suas APIs localmente. Para isso, basta acessar o diretório serverless-home-challenge e executar o comando `serverless offline`. Isso viabilizará testes locais utilizando por padrão o endereço localhost:3000 como url base de suas APIs. Após essa configuração, você poderá utilizar o postman ou uma janela de terminal para executar requisições como `curl http://localhost:3000/dev/todos`
 
 
 
