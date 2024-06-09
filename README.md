@@ -3,7 +3,8 @@
 
 Esse documento descreve o passo a passo para configuração e teste das APIs desenvolvidas para o projeto TODO list. O projeto fornece endpoints para manipulação de itens de uma lista de tarefas. A sessão "anexos" deste documento contém um arquivo de collections do Postman, descrevendo todos os endpoints e conténdo os payloads e demais configurações necessárias para seu uso. Os requisitos referentes ao desenvolvimento deste projeto estão descritos [neste documento].
 
-Diagrama de visão geral da aplicação: [draw io]
+Diagrama de visão geral da aplicação: 
+![Build Status](./serverless-challenge.drawio.png)
 
 **Importante:** Para validação deste projeto poderão ser utilizados os seguintes caminhos:
 
@@ -19,7 +20,9 @@ Diagrama de visão geral da aplicação: [draw io]
 
 ### Setup Guide
 ##### Testes utilizando a API já hospedada
-Como mencionado anteriormente, para seguir este caminho de validação basta fazer o download da collection do Postman disponível na sessão "anexo". **Importante:** O caminho raíz da collection (Serverless Home Challenge - TODO List) contém uma descrição geral do serviço e contém um link de conteúdo **"View complete documentation"**, cujo conteúdo descreve detalhadamente cada um dos endpoints disponíveis, campos e formatos exigidos e exemplos de payloads válidos e inválidos.
+Como mencionado anteriormente, para seguir este caminho de validação basta fazer o download da collection do Postman disponível na sessão "anexo". **Importante:** O caminho raíz da collection (Serverless Home Challenge - TODO List) contém uma descrição geral do serviço e contém um link de conteúdo **"View complete documentation"**, cujo conteúdo descreve detalhadamente cada um dos endpoints disponíveis, campos e formatos exigidos e exemplos de payloads válidos e inválidos:
+
+![Build Status](./postman_variable_setup.png)
 
 ##### Fazer deploy automatizado em ambiente AWS
 Para seguir com a configuração do projeto na sua própria conta AWS, siga o passo-a-passo abaixo:
@@ -46,8 +49,8 @@ Usuário IAM da AWS configurado para acesso programático via Access Keys. **Cas
 Neste ponto sua aplicação já deve estar hospedada em sua conta AWS e pronta para uso. Para consultar seu endpoint de requisições, acesse sua conta AWS e, no serviço Amazon API Gateway, selecione a API que acabou de ser criada (serverless-challenge). No menu lateral, acesse "stages". Nesse tela, copie o valor de "Invoke URL". Essa será a URL de base para todas as chamadas em sua API. 
 
 A partir daqui, basta abrir a Postman collection fornecida e atualizar o valor da variável "serverless_api_challenge_url". Para isso, na raiz da collection, basta acessar a aba "variables" e substituir os campos "initial value" e "current value" com a sua URL de invocação, conforme mostrado abaixo:
-[print 1]
-[print 2]
+
+![Build Status](./postman_variable_setup.png)
 
 > Note: Utilizando o método de deploy em sua própria conta, não será necessário o uso de API keys nas requisições, pois essa configuração não faz parte do template fornecido no projeto e foi configurada separadamente.
 
@@ -61,9 +64,9 @@ A partir daqui, basta abrir a Postman collection fornecida e atualizar o valor d
 
 
 
-[![N|Solid](https://cldup.com/dTxpPi9lDf.thumb.png)](https://nodesource.com/products/nsolid)
 
-[![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
+
+
 
 
 
