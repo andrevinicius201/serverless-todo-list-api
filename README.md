@@ -1,84 +1,89 @@
 # Serverless Home Challenge
 ### Project Overview
 
-Esse documento descreve o passo a passo para configuração e teste das APIs desenvolvidas para o projeto TODO list. O projeto fornece endpoints para manipulação de itens de uma lista de tarefas. Os requisitos referentes ao desenvolvimento deste projeto estão descritos: [neste documento](./serverless-home-challenge.pdf).
 
-Diagrama de visão geral da aplicação: 
-![Build Status](./serverless-challenge.drawio.png)
+This document describes the step-by-step process for configuring and testing the APIs developed for the TODO list project. The project provides endpoints for manipulating items in a task list. The requirements relating to the evaluation of this project are described: [in this document](./serverless-home-challenge.pdf).
 
-Todos os endpoints configurados para esse projeto, instruções de uso e configurações necessárias estão descritos nessa [postman collection](./serverless-home-challenge.pdf). **Por favor faça o download** antes de seguir.
+Application overview diagram:
+![Application Diagram](./serverless-challenge.drawio.png)
+
+All endpoints configured for this project, usage instructions and necessary configurations are described in this [postman collection](./serverless-home-challenge.pdf). **Please download it** before proceeding.
 
 **Importante:** Para validação deste projeto poderão ser utilizados os seguintes caminhos:
+**Important:** There are many available methods to validate this project. The items below gives an overview of each method.
 
 **1-** Utilizando os endpoints que já estão hospedados em ambiente AWS na conta do desenvolvedor do projeto (André Vinícius). Para seguir com este caminho, nenhum setup adicional é necessário, dado que a API (API Gateway), funções Lambda e banco de dados DynamoDB já estão hospedados e prontos para uso. Essa API somente receberá requisições contendo uma API-key válida, que já está configurada como uma variável de collection do Postman fornecida na sessão "anexos" e é necessária em todos os endpoints. 
 
-**2-** Fazendo deploy do projeto em qualquer conta AWS. A configuração de todos os recursos foi feita via Serverless Framework. O projeto está pronto para ser implantado de forma automatizada e as instruções estão fornecidas na sessão "setup". 
+**1-** Using the endpoints that are already hosted on the developer's (André Vinícius) AWS account. To follow this path, no additional setup is necessary, as the API (API Gateway), Lambda functions and DynamoDB database are already hosted and ready to use. This API will only accept requests containing a valid API-key, which is already configured as a Postman collection variable. Its utilization is required in all endpoints.
 
-**3-** Testes locais: Neste projeto utilizou-se o plugin serverless-offline, que permite um ciclo de desenvolvimento e testes mais rápidos por meio de endpoints rodando em ambiente local, sem necessidade de publicação em ambiente AWS a todo momento.
+**2-** Deploying the project to any AWS account. Configuration of all resources was done via Serverless Framework. The project is ready to be deployed in an automated way and instructions are provided in the "setup" session.
 
-**Importante:** Independemente de qual caminho de validação será utilizado, ressalta-se que o projeto também conta um conjunto de testes unitários a fim de validar o comportamento das funções Lambda envolvidas. Para isso utilizou-se a biblioteca "pytest" juntamente com a biblioteca "moto" para simulação do comportamento de serviços AWS. 
+
+**3-** Local testing: In this project, the serverless-offline plugin was used, which allows a faster development and testing cycle through endpoints running in a local environment, without the need to publish in an AWS environment at all times.
+
+**Important:** Regardless of which validation method will be used, it should be noted that the project also has a set of unit tests in order to validate the behavior of the Lambda functions involved. Instructions on how to proceed with this tests are also provided below in this document.
 
 > Note: Recomendo fortemente o uso do Software Postman para validação dos endpoints utilizando as collections fornecidas, que já estão configuradas para uso.
+> Note: I strongly recommend using the software Postman to validate the endpoints. It is also recommended to use [this postman collection](./serverless-home-challenge.pdf), which is already configured for use.
 
 ### Setup Guide
-##### Testes utilizando a API já hospedada
-Como mencionado anteriormente, para seguir este caminho de validação basta fazer o download da collection do Postman disponível na sessão "anexo". **Importante:** O caminho raíz da collection (Serverless Home Challenge - TODO List) contém uma descrição geral do serviço e contém um link de conteúdo **"View complete documentation"**, cujo conteúdo descreve detalhadamente cada um dos endpoints disponíveis, campos e formatos exigidos e exemplos de payloads válidos e inválidos:
+##### Tests using the already hosted API
+As mentioned previously, to follow this validation method simply download the Postman collection and open it using Postman.
+**Important:** The root path of the collection (Serverless Home Challenge - TODO List) contains a general description of the service and contains a link to **"View complete documentation"**, whose content describes in detail each of the available endpoints, required fields and formats, and examples of valid and invalid payloads:
 
-![Build Status](./postman_variable_setup.png)
+![Example of postman screen](./postman_variable_setup.png)
+##### Automated deployment in a separate AWS environment
+To continue setting up the project in your own AWS account, follow the step-by-step instructions below:
 
-##### Fazer deploy automatizado em ambiente AWS
-Para seguir com a configuração do projeto na sua própria conta AWS, siga o passo-a-passo abaixo:
-###### Pré requisitos (por favor não avance para a etapa de setup antes de validar os seguintes itens): 
-Conta AWS criada; 
-Node JS instalado (necessário para execução dos comandos do Serverless Framework);
-Python a partir da versão 3.10 (necessário caso queira rodar os endpoints de API localmente por meio do serverless-offline plugin);
-Usuário IAM da AWS configurado para acesso programático via Access Keys. **Caso ainda não tenha esse usuário AWS com acesso programático configurado**, execute os seguintes passos:
- - Dentro de sua conta AWS, acesse o console do serviço IAM
- - Em "users", clique em "create user", forneça um nome de sua preferência e avance
- - Na tela seguinte, selecione "Attach policies directly" e inclua a policy "AdministratorAccess". Essa policy deverá ser utilizada apenar em ambientes de testes para simplificar o processo de validação dos endpoints. Por razões de segurança ela não deverá ser utilizada em ambiente de produção e deverá ser substituida por uma que tenha apenas os acessos necessários. 
- - Avance para a tela de revisão e conclua a criação do usuário.
- - De volta à tela de listagem de usuários, selecione o usuário que você acabou de criar, acesse a aba "Security Credentials" e clique no botão "Create Access Key". Em "use case", Selecione a opção "Command Line Interface (CLI)" e marque a caixa de confirmação. Após confirmar o procedimento, você receberá os valores de "Access Key" e "Secret access key". Eles serão necessários para a configuração do Serverless Framework, permitindo que o mesmo faça deploy de recursos em sua conta AWS. 
-    
-###### Setup do ambiente: 
- - Realize o download deste projeto utilizando o meio de sua preferência (Git Clone ou download .zip file)
- - Utilizando um terminal, execute o comando `npm i serverless -g`. Isso instalará o serverless framework em sua máquina e o tornará acessível a partir de qualquer diretório.
- - Crie um usuário na AWS e habilite as Access Keys.
- - Acesse o diretório raiz do projeto baixado e execute o comando `serverless config`. 
- - Ainda no diretório raiz do projeto, faça a instalação dos plugins necessários, através dos comandos `npm install serverless-offline --save-dev` e `npm install serverless-python-requirements` 
- - Para seguir com o deploy, execute o comando `serverless deploy` 
+###### Prerequisites (please do not proceed to the setup stage before validating the following items):
+AWS account created;
+Node JS installed (necessary to execute Serverless Framework commands);
+Python - at least version 3.10 - (required if you want to run the API endpoints locally through the serverless-offline plugin);
+AWS IAM user configured for programmatic access via Access Keys. **If you do not already have this AWS user with programmatic access configured**, perform the following steps:
+ - Within your AWS account, access the IAM console;
+ - Under "users", click "create user", provide a name of your choice and proceed;
+ - On the next screen, select "Attach policies directly" and include the "AdministratorAccess" policy. This policy should only be used in test environment to simplify the endpoint validation process. For security reasons it should not be used in a production environment and should be updated with more restrictive permissions.
+ - Proceed to the review screen and complete user creation.
+ - Back on the user list screen, select the user you just created, access the "Security Credentials" tab and click the "Create Access Key" button. In "use case", select the "Command Line Interface (CLI)" option and check the confirmation box. After confirming the procedure, you will receive the values ​​for "Access Key" and "Secret access key". They will be necessary for configuring the Serverless Framework, allowing it to deploy resources to your AWS account.
 
-###### Ajustes finais: 
-Neste ponto sua aplicação já deve estar hospedada em sua conta AWS e pronta para uso. Para consultar seu endpoint de requisições, acesse sua conta AWS e, no serviço Amazon API Gateway, selecione a API que acabou de ser criada (serverless-challenge). No menu lateral, acesse "stages". Nesse tela, copie o valor de "Invoke URL". Essa será a URL de base para todas as chamadas em sua API. 
 
-A partir daqui, basta abrir a Postman collection fornecida e atualizar o valor da variável "serverless_api_challenge_url". Para isso, na raiz da collection, basta acessar a aba "variables" e substituir os campos "initial value" e "current value" com a sua URL de invocação, conforme mostrado abaixo:
+###### Environment setup:
+ - Download this project using your preferred method (Git Clone or download .zip file)
+ - Using a terminal, run the command `npm i serverless -g`. This will install the serverless framework on your machine and make it accessible from any directory.
+ - Create a user on AWS and enable Access Keys.
+ - Access the root directory of the downloaded project and run the `serverless config` command.
+ - Still in the project root directory, install the necessary plugins, using the commands `npm install serverless-offline --save-dev` and `npm install serverless-python-requirements`
+ - To continue with the deployment, run the `serverless deploy` command
 
-![Build Status](./postman_variable_setup.png)
 
-> Note: Utilizando o método de deploy em sua própria conta, não será necessário o uso de API keys nas requisições, pois essa configuração não faz parte do template fornecido no projeto e foi configurada separadamente.
+###### Final adjustments:
+At this point, your application should already be hosted in your AWS account and ready to use. To get your invocation endpoint URL, access your AWS account and, in the Amazon API Gateway service, select the API that was just created (serverless-challenge). In the side menu, access "stages". On this screen, copy the value of "Invoke URL". This will be the base URL for all calls to your API.
 
-##### Testes locais
-1) Testes unitários - setup:
- - Dentro do diretório "serverless-home-challenge", executar os comandos `pip install -r requirements.txt`. Isso irá configurar as bibliotecas pytest, moto e boto3.
- - Após a instalação das bibliotecas, basta executar o comando `pytest`, que identificará automaticamente todos os arquivos de teste (localizados no diretório "tests" e executará todos os casos descritos). Em cada um dos casos, há uma descrição da funcionalidade a ser testada.
+From here, simply open the provided Postman collection and update the value of the "serverless_api_challenge_url" variable. To do this, in the root of the collection, simply access the "variables" tab and replace the "initial value" and "current value" fields with your invocation URL, as shown below:
 
-2) Além dos testes unitários, pode-se usar o serverless-offline para testar suas APIs localmente. Para isso, basta acessar o diretório serverless-home-challenge e executar o comando `serverless offline`. Isso viabilizará testes locais utilizando por padrão o endereço localhost:3000 como url base de suas APIs. Após essa configuração, você poderá utilizar o postman ou uma janela de terminal para executar requisições como `curl http://localhost:3000/dev/todos`
+![Setting postman variable](./postman_variable_setup.png)
+
+> Note: Using the deployment method in your own account, it will not be necessary to use API keys, as this configuration is not part of the project template and it was configured separately.
+
+##### Local tests
+1) Unit tests - setup:
+ - Under the "serverless-home-challenge" directory, run the commands `pip install -r requirements.txt`. This will configure the pytest, moto and boto3 libraries.
+ - After installing the libraries, simply run the `pytest` command, which will automatically identify all test files (located in the "tests" directory and execute all cases described). In each case, there is a description of the functionality to be tested.
+
+2) In addition to unit testing, you can use serverless-offline to test your APIs locally. To do this, simply access the serverless-home-challenge directory and run the `serverless offline` command. This will enable local tests using localhost as your API address. After this configuration, you can use postman or a terminal window to execute requests such as `curl http://localhost:3000/dev/todos`
 
 ### Architecture discussion
-As configurações dos componentes de arquitetura deste projeto **não** foram pensadas para um cenário real pronto para produção. Isso significa que foram mantidas as configurações padrão, sem maiores preocupações quanto a detalhes de configuração. Alguns desses detalhes incluem.
- - **Funções Lambda**: A AWS permite fazer um ajuste fino da capacidade de CPU e memória a ser alocada nas funções, bem como configurações de conectividade (endpoint público) e pré-aquecimento de ambiente de execução a fim de evitar cold-starts. 
-- **Integração entre API Gateway, Lambda e DynamoDB**: a fim de seguir apropriadamente as especificações do documento de requisitos, foram utilizadas funções Lambda para representar o comportamento de cada endpoint. Apesar disso, é importante mencionar que o serviço Amazon API Gateway conta com integração nativa com o DynamoDB, permitindo realizar operações de CRUD sem a necessidade de uma função Lambda intermediando. Isso pode ser benéfico para diminuir a latência das requisições e o custo do projeto, eliminando um componente de arquitetura.
-- **Tipo de endpoint do API Gateway**: O API Gateway permite a configuração de diferentes de tipos de deployment de endpoints. Esse projeto faz uso de uma API do tipo REST hospedada em configuração EDGE-optimized, que faz uso das CDNs da AWS para distribuição dos pontos de presença. Outras configurações estão disponíveis, como as APIs regionais e privadas. Além disso existe a possibilidade de configurar o modelo da API para o tipo HTTP, que apresenta menor custo em troca de oferecer um conjunto reduzido de funcionalidades para os endpoints.
-- **Configuração de CORS do API Gateway**: Para simplificação, todos os endpoints deste projeto estão configurados para permitir requisições de origens diferentes do host (CORS), o que facilita a integração com aplicações de front-end em ambiente de testes. Para ambientes de produção é necessário ajuste fino nessa configuração.
-- **Tabela do DynamoDB**: As tabelas do DynamoDB podem ser configuradas para suportar diferentes formas de capacidade de provisionamento de leitura e escrita, o que não foi levado em consideração no escopo de entrega deste projeto. Além disso, para projetos de maior porte é possível trabalhar com índices para otimização de desempenho em consultas, por meio de Global Secondary Indexes ou Local Secondary Indexes.
+The configuration of the architectural components of this project were **not** designed for a real production-ready scenario. This means that I kept the default settings, without any major concerns regarding configuration details. Some of these details include:
 
-### Outros pontos técnicos para discussão
-- **Consultas no DynamoDB**: O código utilizado neste projeto faz uso das API de scan() do dynamodb. Por se tratar de um ambiente de demonstração e validação, isso não afeta a aplicação de modo geral, porém em grandes bases de dados recomenda-se utilizar as APIs de query(), que são menos custosas em termos de performance, pois consomem menos capacidade de leitura por ser restritas a partições específicas que se queira consultar.
-- **Validações a nível de API Gateway**: Todos os endpoints que requerem o fornecimento de um body estão sendo validados a nível do API Gateway. Isso impede que payloads com corpos inválidos cheguem às funções Lambda, evitando desperdício de capacidade de processamento e custos desnecessários.
-- **Testes unitários**: Os testes desenvolvidos estão restritos a validação de comportamento das funções Lambda, sem maiores preocupações quanto à sua integração com o Amazon API Gateway. Isso porque as validações de payload estão sendo realizadas a nível de API Gateway, que serão o único caminho de acesso às funcionalidades dessas funções.
+ - **Lambda functions**: AWS allows you to fine-tune the CPU and memory capacity to be allocated to the functions, as well as connectivity settings (public endpoint) and pre-warming of the execution environment in order to avoid cold-starts.
+- **Integration between API Gateway, Lambda and DynamoDB**: in order to properly follow the specifications of the requirements document, Lambda functions were used to represent the behavior of each endpoint. It is important to mention that the Amazon API Gateway service has native integration with DynamoDB, allowing you to perform CRUD operations without the need for an intermediary Lambda function. This can be beneficial to reduce request latency and project cost by eliminating an architectural component.
+- **API Gateway endpoint type**: API Gateway allows you to configure different types of endpoint deployments. This project makes use of a "REST" API hosted in an EDGE-optimized configuration, which makes use of AWS CDN to distribute the API at many points of presence. Other settings are available, such as regional and private APIs. Furthermore, there is the possibility of configuring the API model as "HTTP" type, which presents a lower cost in exchange for offering a reduced set of functionalities for the endpoints. More details provided [here](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-vs-rest.html)
+- **API Gateway CORS Configuration**: For simplicity, all endpoints in this project are configured to allow requests from origins other than the host (CORS feature enabled), which facilitates integration with front-end applications in a testing environment. For production environments, fine-tuning this configuration is necessary.
+- **DynamoDB Table**: DynamoDB tables can be configured to support different forms of read and write provisioning capacity, which was not taken into account in the delivery scope of this project. Furthermore, for larger projects it is possible to work with indexes to optimize performance in queries, through Global Secondary Indexes or Local Secondary Indexes.
 
-
-
-
-
+### Other technical points for discussion
+- **Queries in DynamoDB**: The code used in this project makes use of the dynamodb scan() API. As it is a demonstration and validation environment, this does not affect the application in general, however in large databases it is recommended to use the query() APIs, which are less costly in terms of performance, as they consume less capacity during read operations because they are restricted to specific partitions that you want to query.
+- **Validations at the API Gateway level**: All endpoints that require a payload body are being validated at the API Gateway level using JSON schemas. This prevents payloads with invalid bodies from reaching Lambda functions, avoiding wasted processing capacity and unnecessary costs.
+- **Unit tests**: The tests developed are restricted to validating the behavior of Lambda functions, without major concerns regarding their integration with Amazon API Gateway. This is because payload validations are being carried out at the API Gateway level, which will be the only access path to the functionalities of these functions.
 
 
