@@ -7,7 +7,7 @@ This document describes the step-by-step process for configuring and testing the
 Application overview diagram:
 ![Application Diagram](./serverless-challenge.drawio.png)
 
-All endpoints configured for this project, usage instructions and necessary configurations are described in this [postman collection](./serverless-home-challenge.pdf). **Please download it** before proceeding.
+All endpoints configured for this project, usage instructions and necessary configurations are described in this [postman collection](./serverless-home-challenge.json). **Please download it** before proceeding.
 
 **Importante:** Para validação deste projeto poderão ser utilizados os seguintes caminhos:
 **Important:** There are many available methods to validate this project. The items below gives an overview of each method.

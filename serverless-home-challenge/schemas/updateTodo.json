@@ -1,6 +1,10 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
+    "anyOf": [
+        {"required": ["completed"]},
+        {"required": ["title"]}
+    ],
     "properties": {
       "completed": {
         "type": "boolean"
@@ -9,10 +13,5 @@
         "type": "string"
       }
     },
-    "required": [],
-    "additionalProperties": false,
-    "oneOf": [
-      { "required": ["completed"] },
-      { "required": ["title"] }
-    ]
+    "additionalProperties": false
   }
