@@ -8,11 +8,11 @@ Application overview diagram:
 ![Application Diagram](./media/serverless-challenge.drawio.png)
 
 All endpoints configured for this project, usage instructions and necessary configurations are described in this [postman collection](./media/serverless-home-challenge.json). **Please download it** before proceeding.
+To use this collection, you just need to open Postman on your computer, go to "collections", click the "import" button and select the json file
 
 **Importante:** Para validação deste projeto poderão ser utilizados os seguintes caminhos:
 **Important:** There are many available methods to validate this project. The items below gives an overview of each method.
 
-**1-** Utilizando os endpoints que já estão hospedados em ambiente AWS na conta do desenvolvedor do projeto (André Vinícius). Para seguir com este caminho, nenhum setup adicional é necessário, dado que a API (API Gateway), funções Lambda e banco de dados DynamoDB já estão hospedados e prontos para uso. Essa API somente receberá requisições contendo uma API-key válida, que já está configurada como uma variável de collection do Postman fornecida na sessão "anexos" e é necessária em todos os endpoints. 
 
 **1-** Using the endpoints that are already hosted on the developer's (André Vinícius) AWS account. To follow this path, no additional setup is necessary, as the API (API Gateway), Lambda functions and DynamoDB database are already hosted and ready to use. This API will only accept requests containing a valid API-key, which is already configured as a Postman collection variable. Its utilization is required in all endpoints.
 
