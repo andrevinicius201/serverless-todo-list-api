@@ -10,7 +10,6 @@ Application overview diagram:
 All endpoints configured for this project, usage instructions and necessary configurations are described in this [postman collection](./media/serverless-home-challenge.json). **Please download it** before proceeding.
 To use this collection, you just need to open Postman on your computer, go to "collections", click the "import" button and select the json file
 
-**Importante:** Para validação deste projeto poderão ser utilizados os seguintes caminhos:
 **Important:** There are many available methods to validate this project. The items below gives an overview of each method.
 
 
@@ -23,7 +22,6 @@ To use this collection, you just need to open Postman on your computer, go to "c
 
 **Important:** Regardless of which validation method will be used, it should be noted that the project also has a set of unit tests in order to validate the behavior of the Lambda functions involved. Instructions on how to proceed with this tests are also provided below in this document.
 
-> Note: Recomendo fortemente o uso do Software Postman para validação dos endpoints utilizando as collections fornecidas, que já estão configuradas para uso.
 > Note: I strongly recommend using the software Postman to validate the endpoints. It is also recommended to use [this postman collection](./media/serverless-home-challenge.pdf), which is already configured for use.
 
 ### Setup Guide
@@ -36,10 +34,11 @@ As mentioned previously, to follow this validation method simply download the Po
 To continue setting up the project in your own AWS account, follow the step-by-step instructions below:
 
 ###### Prerequisites (please do not proceed to the setup stage before validating the following items):
-AWS account created;
-Node JS installed (necessary to execute Serverless Framework commands);
-Python - at least version 3.10 - (required if you want to run the API endpoints locally through the serverless-offline plugin);
-AWS IAM user configured for programmatic access via Access Keys. **If you do not already have this AWS user with programmatic access configured**, perform the following steps:
+AWS account created;  
+Node JS installed (necessary to execute Serverless Framework commands);  
+Python - at least version 3.10 - (required if you want to run the API endpoints locally through the serverless-offline plugin);  
+(optional but recommended): [Postman](https://www.postman.com/downloads/)
+AWS IAM user configured for programmatic access via Access Keys. **If you do not already have this AWS user with programmatic access configured**, perform the following steps:  
  - Within your AWS account, access the IAM console;
  - Under "users", click "create user", provide a name of your choice and proceed;
  - On the next screen, select "Attach policies directly" and include the "AdministratorAccess" policy. This policy should only be used in test environment to simplify the endpoint validation process. For security reasons it should not be used in a production environment and should be updated with more restrictive permissions.
@@ -50,14 +49,16 @@ AWS IAM user configured for programmatic access via Access Keys. **If you do not
 ###### Environment setup:
  - Download this project using your preferred method (Git Clone or download .zip file)
  - Using a terminal, run the command `npm i serverless -g`. This will install the serverless framework on your machine and make it accessible from any directory.
- - Create a user on AWS and enable Access Keys.
- - Access the root directory of the downloaded project and run the `serverless config` command.
+ - Under the project directory, run `cd serverless-home-challenge` to access the serverless template configuration folder and run the `serverless config` command.
+ - At this point you may be requested to Login/Register to the Serverless Framework service. Please proceed with the authentication or registration process following the guidelines provided on the screen.
+ - When prompted about "Create Or Select An Existing App", just select the option "Skip Adding An App"
+ - You will also may be asked to configure AWS credentials. If it is the case, you will receive a warning similar to "AWS credentials missing or invalid. Run 'serverless' to set up AWS credentials. If it happens, please proceed with this configuration. When prompted about AWS credentials, select the option "Save AWS Credentials in a Local Profile". Then, enter the AWS Access Key Id and Secret Access Key that you created using AWS IAM.
  - Still in the project root directory, install the necessary plugins, using the commands `npm install serverless-offline --save-dev` and `npm install serverless-python-requirements`
  - To continue with the deployment, run the `serverless deploy` command
 
 
 ###### Final adjustments:
-At this point, your application should already be hosted in your AWS account and ready to use. To get your invocation endpoint URL, access your AWS account and, in the Amazon API Gateway service, select the API that was just created (serverless-challenge). In the side menu, access "stages". On this screen, copy the value of "Invoke URL". This will be the base URL for all calls to your API.
+At this point, your application should already be hosted in your AWS account and ready to use. To get your invocation endpoint URL, access your AWS account and, in the Amazon API Gateway service, select the API that was just created. In the side menu, access "stages". On this screen, copy the value of "Invoke URL". This will be the base URL for all calls to your API.
 
 From here, simply open the provided Postman collection and update the value of the "serverless_api_challenge_url" variable. To do this, in the root of the collection, simply access the "variables" tab and replace the "initial value" and "current value" fields with your invocation URL, as shown below:
 

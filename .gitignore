@@ -21,7 +21,6 @@ var/
 
 # Node installation packages folder
 node_modules
-requirements.txt
 temp
 
 .pytest_cache
