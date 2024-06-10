@@ -45,11 +45,16 @@ AWS IAM user configured for programmatic access via Access Keys. **If you do not
  - Proceed to the review screen and complete user creation.
  - Back on the user list screen, select the user you just created, access the "Security Credentials" tab and click the "Create Access Key" button. In "use case", select the "Command Line Interface (CLI)" option and check the confirmation box. After confirming the procedure, you will receive the values ​​for "Access Key" and "Secret access key". They will be necessary for configuring the Serverless Framework, allowing it to deploy resources to your AWS account.
 
+###### Project folder structure:
+
 
 ###### Environment setup:
  - Download this project using your preferred method (Git Clone or download .zip file)
+ - Open the project folder using the code editor of your preference. I recommend using VS Code  
+ - With the project folder open, navigate to the serverless-home-challenge project subfolder by running `cd serverless-home-challenge`.
  - Using a terminal, run the command `npm i serverless -g`. This will install the serverless framework on your machine and make it accessible from any directory.
- - Under the project directory, run `cd serverless-home-challenge` to access the serverless template configuration folder and run the `serverless config` command.
+ - You will also need to install some additional npm packages for local testing. To do this, run `npm install serverless-offline --force`, followed by `npm install serverless-python-requirements --force` 
+ - After this package installation steps, run `serverless config`  
  - At this point you may be requested to Login/Register to the Serverless Framework service. Please proceed with the authentication or registration process following the guidelines provided on the screen.
  - When prompted about "Create Or Select An Existing App", just select the option "Skip Adding An App"
  - You will also may be asked to configure AWS credentials. If it is the case, you will receive a warning similar to "AWS credentials missing or invalid. Run 'serverless' to set up AWS credentials. If it happens, please proceed with this configuration. When prompted about AWS credentials, select the option "Save AWS Credentials in a Local Profile". Then, enter the AWS Access Key Id and Secret Access Key that you created using AWS IAM.
