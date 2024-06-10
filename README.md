@@ -37,7 +37,7 @@ To continue setting up the project in your own AWS account, follow the step-by-s
 AWS account created;  
 Node JS installed (necessary to execute Serverless Framework commands);  
 Python - at least version 3.10 - (required if you want to run the API endpoints locally through the serverless-offline plugin);  
-(optional but recommended): [Postman](https://www.postman.com/downloads/)
+(optional but recommended): [Postman](https://www.postman.com/downloads/)  
 AWS IAM user configured for programmatic access via Access Keys. **If you do not already have this AWS user with programmatic access configured**, perform the following steps:  
  - Within your AWS account, access the IAM console;
  - Under "users", click "create user", provide a name of your choice and proceed;
@@ -51,14 +51,13 @@ AWS IAM user configured for programmatic access via Access Keys. **If you do not
 ###### Environment setup:
  - Download this project using your preferred method (Git Clone or download .zip file)
  - Open the project folder using the code editor of your preference. I recommend using VS Code  
- - With the project folder open, navigate to the serverless-home-challenge project subfolder by running `cd serverless-home-challenge`.
- - Using a terminal, run the command `npm i serverless -g`. This will install the serverless framework on your machine and make it accessible from any directory.
- - You will also need to install some additional npm packages for local testing. To do this, run `npm install serverless-offline --force`, followed by `npm install serverless-python-requirements --force` 
- - After this package installation steps, run `serverless config`  
+ - At the project root folder, run the command `npm i serverless -g`. This will install the serverless framework on your machine and make it accessible from any directory.
+ - You will also need to install some additional npm packages for local testing. To do this, run `npm install serverless-offline --force`, followed by `npm install serverless-python-requirements --force`     
+ - Then, navigate to the serverless-home-challenge project subfolder by running `cd serverless-home-challenge` on a terminal windows.
+ - After this package installation steps, run the `serverless` command
+ - When prompted about "Create Or Select An Existing App", select the option "Skip Adding An App"
  - At this point you may be requested to Login/Register to the Serverless Framework service. Please proceed with the authentication or registration process following the guidelines provided on the screen.
- - When prompted about "Create Or Select An Existing App", just select the option "Skip Adding An App"
- - You will also may be asked to configure AWS credentials. If it is the case, you will receive a warning similar to "AWS credentials missing or invalid. Run 'serverless' to set up AWS credentials. If it happens, please proceed with this configuration. When prompted about AWS credentials, select the option "Save AWS Credentials in a Local Profile". Then, enter the AWS Access Key Id and Secret Access Key that you created using AWS IAM.
- - Still in the project root directory, install the necessary plugins, using the commands `npm install serverless-offline --save-dev` and `npm install serverless-python-requirements`
+ - You may also be asked to configure AWS credentials. If it is the case, you will receive a warning similar to "AWS credentials missing or invalid. Run 'serverless' to set up AWS credentials. If it happens, please proceed with this configuration. When prompted about AWS credentials, select the option "Save AWS Credentials in a Local Profile". Then, enter the AWS Access Key Id and Secret Access Key that you created using AWS IAM.
  - To continue with the deployment, run the `serverless deploy` command
 
 
@@ -73,7 +72,7 @@ From here, simply open the provided Postman collection and update the value of t
 
 ##### Local tests
 1) Unit tests - setup:
- - Under the "serverless-home-challenge" directory, run the commands `pip install -r requirements.txt`. This will configure the pytest, moto and boto3 libraries.
+ - Under the "serverless-home-challenge" directory, run `pip install -r requirements.txt`. This will configure the pytest, moto, boto3 and mocker libraries.
  - After installing the libraries, simply run the `pytest` command, which will automatically identify all test files (located in the "tests" directory and execute all cases described). In each case, there is a description of the functionality to be tested.
 
 2) In addition to unit testing, you can use serverless-offline to test your APIs locally. To do this, simply access the serverless-home-challenge directory and run the `serverless offline` command. This will enable local tests using localhost as your API address. After this configuration, you can use postman or a terminal window to execute requests such as `curl http://localhost:3000/dev/todos`
